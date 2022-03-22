@@ -10,6 +10,7 @@ class Case:
     dust: bool = False #Poussière
     rubble: bool = False #Décombre
     people: bool = False #Victime
+    note: int = -1
 
 
 class CLI_Environment:
@@ -30,40 +31,40 @@ class CLI_Environment:
             print("")
         print("]")
 
-# Function which is used to display the grid
+    # Function which is used to display the grid
     def isFire(self, x_position, y_position):
         if self.grid[x_position][y_position].fire:
-            return "F",True
+            return "F", True
         else:
-            return "0",False
+            return "0", False
 
     # Function which is used to display the grid
     def isHeat(self, x_position, y_position):
         if self.grid[x_position][y_position].heat:
-            return "h",True
+            return "h", True
         else:
-            return "0",False
+            return "0", False
 
     # Function which is used to display the grid
     def isDust(self, x_position, y_position):
         if self.grid[x_position][y_position].dust:
-            return "d",True
+            return "d", True
         else:
-            return "0",False
+            return "0", False
 
     # Function which is used to display the grid
     def isRubble(self, x_position, y_position):
         if self.grid[x_position][y_position].rubble:
-            return "R",True
+            return "R", True
         else:
-            return "0",False
+            return "0", False
 
     # Function which is used to display the grid
     def isPeople(self, x_position, y_position):
         if self.grid[x_position][y_position].people:
-            return "P",True
+            return "P", True
         else:
-            return "0",False
+            return "0", False
 
     # Function that clear all the object in the case, diamond will be set to false
     # and dust too
@@ -103,9 +104,9 @@ class CLI_Environment:
 
     #people Setter
     def Setpeople(self):
-        y,x = 0,0
-        while (x,y) == (0,0):
-            x,y = randint(0,self.gridSize-1),randint(0,self.gridSize-1)
+        y, x = 0, 0
+        while (x, y) == (0, 0):
+            x, y = randint(0, self.gridSize-1), randint(0, self.gridSize-1)
         self.grid[x][y].people = True
 
     # Function that will creat a new grid with a random probability to creat
