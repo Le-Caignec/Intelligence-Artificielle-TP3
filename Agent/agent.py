@@ -1,3 +1,5 @@
+from Environment.env import Case
+
 class Agent:
 
     def __init__(self, x_position, y_position, environment, proba_fire, proba_rubble):
@@ -10,6 +12,7 @@ class Agent:
         self.proba_rubble = proba_rubble
         self.certainInformation = []
         self.uncertainInformation = []
+        self.neighboorslist = self.environment.get_neighboors(self, Case(self.x_position, self.y_position))
 
     #function that enable to display in the console
     #the agent's position
@@ -65,9 +68,63 @@ class Agent:
             return False
 
     def SystemExpert(self):
-        print("Fonction qui reste a ecrire")
+        print("J'avance d'une case vers la plus adéquate")
         self.peopleFound = True
 
+    def ChainageAvant(self):
+        self.regleRubble()
+        self.regleDust()
+        self.regleHeat()
+        self.regleFire()
+        self.reglePeople()
+
+    def regleFire(self):
+        tempList = []
+        for case in self.neighboorslist:
+            if case.fire is True:
+                if case.x_position + 1 <= self.gridSize - 1:
+                    tempList.append(Case(case.x_position + 1, case.y_position, heat=True))
+                if case.x_position - 1 >= 0:
+                    tempList.append(Case(case.x_position - 1, case.y_position, heat=True))
+                if case.y_position + 1 <= self.gridSize - 1:
+                    tempList.append(Case(case.x_position, case.y_position + 1, heat=True))
+                if case.y_position - 1 >= 0:
+                    tempList.append(Case(case.x_position, case.y_position - 1, heat=True))
+                tempList.remove(Case(self.x_position, self.y_position, heat=True))
+        self.certainInformation.extend(tempList)
+
+    def regleRubble(self):
+        tempList = []
+        for case in self.neighboorslist:
+            if case.fire is True:
+                if case.x_position + 1 <= self.gridSize - 1:
+                    tempList.append(Case(case.x_position + 1, case.y_position, rubble=True))
+                if case.x_position - 1 >= 0:
+                    tempList.append(Case(case.x_position - 1, case.y_position, rubble=True))
+                if case.y_position + 1 <= self.gridSize - 1:
+                    tempList.append(Case(case.x_position, case.y_position + 1, rubble=True))
+                if case.y_position - 1 >= 0:
+                    tempList.append(Case(case.x_position, case.y_position - 1, rubble=True))
+                tempList.remove(Case(self.x_position, self.y_position, rubble=True))
+        self.certainInformation.extend(tempList)
+
+    def regleHeat(self):
+        for case in self.neighboorslist:
+            if case.heat is True:
+                return True
+            return False
+
+    def regleDust(self):
+        for case in self.neighboorslist:
+            if case.Dusst is True:
+                return True
+            return False
+
+    def reglePeople(self):
+        for case in self.neighboorslist:
+            if case.people is True:
+                return True
+            return False
 
 
 
