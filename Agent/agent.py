@@ -1,4 +1,16 @@
 from Environment.env import Case
+from dataclasses import dataclass
+
+@dataclass
+class ProbaCase:
+    x_position: int = 0
+    y_position: int = 0
+    fire: float = 0  # Feu
+    heat: float = 0  # Chaleur
+    dust: float = 0  # Poussière
+    rubble: float = 0  # Décombre
+    scream: float = 0 # crie
+    people: float = 0  # Victime
 
 class Agent:
 
@@ -10,8 +22,7 @@ class Agent:
         self.blockedAgent = False
         self.proba_fire = proba_fire
         self.proba_rubble = proba_rubble
-        self.certainInformation = []
-        self.uncertainInformation = []
+        self.certainInformation = [[ProbaCase(k, i) for i in range(environment.gridSize)] for k in range(environment.gridSize)]
         self.neighboorslist = self.environment.get_neighboors(self, Case(self.x_position, self.y_position))
 
     #function that enable to display in the console
@@ -83,30 +94,26 @@ class Agent:
         for case in self.neighboorslist:
             if case.fire is True:
                 if case.x_position + 1 <= self.gridSize - 1:
-                    tempList.append(Case(case.x_position + 1, case.y_position, heat=True))
+                    self.certainInformation[case.x_position + 1][case.y_position].heat = 1.0
                 if case.x_position - 1 >= 0:
-                    tempList.append(Case(case.x_position - 1, case.y_position, heat=True))
+                    self.certainInformation[case.x_position - 1][case.y_position].heat = 1.0
                 if case.y_position + 1 <= self.gridSize - 1:
-                    tempList.append(Case(case.x_position, case.y_position + 1, heat=True))
+                    self.certainInformation[case.x_position][case.y_position + 1].heat = 1.0
                 if case.y_position - 1 >= 0:
-                    tempList.append(Case(case.x_position, case.y_position - 1, heat=True))
-                tempList.remove(Case(self.x_position, self.y_position, heat=True))
-        self.certainInformation.extend(tempList)
+                    self.certainInformation[case.x_position][case.y_position - 1].heat = 1.0
 
     def regleRubble(self):
         tempList = []
         for case in self.neighboorslist:
-            if case.fire is True:
+            if case.rubble is True:
                 if case.x_position + 1 <= self.gridSize - 1:
-                    tempList.append(Case(case.x_position + 1, case.y_position, rubble=True))
+                    self.certainInformation[case.x_position + 1][case.y_position].dust = 1.0
                 if case.x_position - 1 >= 0:
-                    tempList.append(Case(case.x_position - 1, case.y_position, rubble=True))
+                    self.certainInformation[case.x_position - 1][case.y_position].dust = 1.0
                 if case.y_position + 1 <= self.gridSize - 1:
-                    tempList.append(Case(case.x_position, case.y_position + 1, rubble=True))
+                    self.certainInformation[case.x_position][case.y_position + 1].dust = 1.0
                 if case.y_position - 1 >= 0:
-                    tempList.append(Case(case.x_position, case.y_position - 1, rubble=True))
-                tempList.remove(Case(self.x_position, self.y_position, rubble=True))
-        self.certainInformation.extend(tempList)
+                    self.certainInformation[case.x_position][case.y_position - 1].dust = 1.0
 
     def regleHeat(self):
         for case in self.neighboorslist:

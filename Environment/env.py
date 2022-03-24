@@ -9,7 +9,9 @@ class Case:
     heat: bool = False #Chaleur
     dust: bool = False #Poussière
     rubble: bool = False #Décombre
+    scream: bool = False #cri
     people: bool = False #Victime
+
     note: int = -1
 
 
@@ -26,7 +28,7 @@ class CLI_Environment:
         print("[")
         for y_position in range(self.gridSize):
             for x_position in range(self.gridSize):
-                print("[" + self.isFire(x_position, y_position)[0] + "," + self.isHeat(x_position, y_position)[0] + "," + self.isDust(x_position, y_position)[0] + "," + self.isRubble(x_position, y_position)[0]+ "," + self.isPeople(x_position, y_position)[0] + "], ",
+                print("[" + self.isFire(x_position, y_position)[0] + "," + self.isHeat(x_position, y_position)[0] + "," + self.isDust(x_position, y_position)[0] + "," + self.isRubble(x_position, y_position)[0] + "," + self.isPeople(x_position, y_position)[0] + "," + self.isScream(x_position, y_position)[0] + "], ",
                       end='')
             print("")
         print("]")
@@ -66,6 +68,13 @@ class CLI_Environment:
         else:
             return "0", False
 
+    # Function which is used to display the grid
+    def isScream(self, x_position, y_position):
+        if self.grid[x_position][y_position].scream:
+            return "s", True
+        else:
+            return "0", False
+
     # Function that clear all the object in the case, diamond will be set to false
     # and dust too
     def ClearCase(self, x_position, y_position):
@@ -102,17 +111,24 @@ class CLI_Environment:
     def SetDust(self, x, y):
         self.grid[x][y].dust = True
 
+    # Scream Setter
+    def SetScream(self, case):
+        for c in self.get_neighboors(self.grid[case.y_position][case.y_position]):
+            self.grid[c.x_position][c.y_position].scream = True
+
     #people Setter
     def Setpeople(self):
         y, x = 0, 0
         while (x, y) == (0, 0):
             x, y = randint(0, self.gridSize-1), randint(0, self.gridSize-1)
         self.grid[x][y].people = True
+        return self.grid[x][y]
 
     # Function that will creat a new grid with a random probability to creat
     # a Dust or a Diamond for each case
     def GenerateNewGrid(self, proba_fire, proba_rubble):
-        self.Setpeople()
+        peopleCase = self.Setpeople()
+        self.SetScream(peopleCase)
         for x in range(self.gridSize):
             for y in range(self.gridSize):
                 if x == 0 and y == 0:

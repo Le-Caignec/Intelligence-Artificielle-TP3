@@ -22,13 +22,15 @@ if __name__ == '__main__':
     #bool = True
     #while bool is True:
 
+        # creation of the l'environment
+        # SizeDepart += 1
+        # env = CLI_Environment(SizeDepart)
+        # env.GenerateNewGrid(proba_fire, proba_rubble)
+        # env.DisplayGrid()
+
         #creation of the agent
         #agent = Agent(X_pos_init_agent, Y_pos_init_agent, env, proba_fire, proba_rubble)
         #bool = agent.On_Off()
 
-        # creation of the l'environment
-        #SizeDepart += 1
-        #env = CLI_Environment(SizeDepart)
-        #env.GenerateNewGrid(proba_fire, proba_rubble)
-        #env.DisplayGrid()
+
 
