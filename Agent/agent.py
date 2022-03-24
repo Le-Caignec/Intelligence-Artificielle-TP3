@@ -90,7 +90,6 @@ class Agent:
         self.reglePeople()
 
     def regleFire(self):
-        tempList = []
         for case in self.neighboorslist:
             if case.fire is True:
                 if case.x_position + 1 <= self.gridSize - 1:
@@ -103,7 +102,6 @@ class Agent:
                     self.certainInformation[case.x_position][case.y_position - 1].heat = 1.0
 
     def regleRubble(self):
-        tempList = []
         for case in self.neighboorslist:
             if case.rubble is True:
                 if case.x_position + 1 <= self.gridSize - 1:
