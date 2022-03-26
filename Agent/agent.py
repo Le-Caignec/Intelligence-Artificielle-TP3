@@ -11,6 +11,7 @@ class ProbaCase:
     rubble: float = 0  # Décombre
     scream: float = 0 # crie
     people: float = 0  # Victime
+    known: bool = False
 
 class Agent:
 
@@ -22,7 +23,7 @@ class Agent:
         self.blockedAgent = False
         self.proba_fire = proba_fire
         self.proba_rubble = proba_rubble
-        self.certainInformation = [[ProbaCase(k, i) for i in range(environment.gridSize)] for k in range(environment.gridSize)]
+        self.Information = [[ProbaCase(k, i) for i in range(environment.gridSize)] for k in range(environment.gridSize)]
         self.neighboorslist = self.environment.get_neighboors(self, Case(self.x_position, self.y_position))
 
     #function that enable to display in the console
@@ -131,6 +132,14 @@ class Agent:
                 return True
             return False
 
-
+    def Analyse(self):
+        for case in self.neighboorslist:
+            x = case.x_position
+            y = case.y_position
+            probaCase = self.Information[x][y]
+            if not probaCase.known:
+                #dust 
+                if probaCase.dust:
+                    return ("à compléter")
 
 
