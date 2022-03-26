@@ -17,6 +17,7 @@ if __name__ == '__main__':
 
     # creation of the agent
     agent = Agent(X_pos_init_agent, Y_pos_init_agent, env, proba_fire, proba_rubble)
+    agent.updateProbaCase(env.grid[0][0])
     bool = agent.On_Off()
 
     #bool = True

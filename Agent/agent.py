@@ -5,13 +5,16 @@ from dataclasses import dataclass
 class ProbaCase:
     x_position: int = 0
     y_position: int = 0
-    fire: float = 0  # Feu
-    heat: float = 0  # Chaleur
-    dust: float = 0  # Poussière
-    rubble: float = 0  # Décombre
-    scream: float = 0 # crie
-    people: float = 0  # Victime
-    known: bool = False
+    fire: float = -1  # Feu
+    heat: float = -1  # Chaleur
+    dust: float = -1  # Poussière
+    rubble: float = -1  # Décombre
+    scream: float = -1 # crie
+    people: float = -1 # Victime
+    known: bool = 0 # assess the level of knowing 
+                    # 0 : not all the values are sure
+                    # 1 : all the values are known but aren't analysed yet
+                    # 2 : all the values are known and analysed -> not needed to be analysed anymore  
 
 class Agent:
 
@@ -24,7 +27,9 @@ class Agent:
         self.proba_fire = proba_fire
         self.proba_rubble = proba_rubble
         self.Information = [[ProbaCase(k, i) for i in range(environment.gridSize)] for k in range(environment.gridSize)]
-        self.neighboorslist = self.environment.get_neighboors(self, Case(self.x_position, self.y_position))
+        self.neighboorslist = self.environment.get_neighboors(Case(self.x_position, self.y_position))
+        self.attributesProbaCase = [a for a in dir(self.Information[0][0]) if not a.__contains__('_') and not callable(getattr(self.Information[0][0], a))]
+
 
     #function that enable to display in the console
     #the agent's position
@@ -133,13 +138,34 @@ class Agent:
             return False
 
     def Analyse(self):
+        # update the proba grid after moving with sure values
         for case in self.neighboorslist:
             x = case.x_position
             y = case.y_position
             probaCase = self.Information[x][y]
-            if not probaCase.known:
-                #dust 
-                if probaCase.dust:
-                    return ("à compléter")
+            if probaCase.known == 0:
+                self.updateProbaCase(case)
+        # update the rest of the grid with unsure values from values with knowing level 1
+        for x in range(self.environment.gridSize):
+            for y in range(self.environment.gridSize):
+                case = self.environment.grid[x][y]
+                probaCase = self.Information[x][y]
+                if probaCase.known == 1:
+                    pass
+                    # à finir 
 
 
+    
+    # on update une case qu'on connait
+    def updateProbaCase(self, case):
+        x = case.x_position
+        y = case.y_position
+        probaCase = self.Information[x][y]
+        for attr in self.attributesProbaCase:
+            if attr ==  "known":
+                probaCase.known = 1
+            if getattr(case, attr):
+                setattr(probaCase, attr, 1)
+            else:
+                setattr(probaCase, attr, 0)
+        
