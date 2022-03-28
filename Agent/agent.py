@@ -1,5 +1,4 @@
-from tkinter import N
-from Environment.env import Case
+
 
 class Agent:
 
@@ -11,6 +10,7 @@ class Agent:
         self.captor.setAgent(self)
         self.peopleFound = False
         self.blockedAgent = False
+        self.previousCase = self.captor.environment.grid[x_position][y_position]
         
     #function that enable to display in the console
     #the agent's position
@@ -21,15 +21,17 @@ class Agent:
 
     #function that enable to update the agent's position
     def UpdateAgentPosition(self, x_position, y_position):
+        self.previousCase = self.captor.environment.grid[self.x_position][self.y_position]
         self.x_position = x_position
         self.y_position = y_position
 
     def extinguishFire(self, case):
         case.fire = False
+        print("Le feu a bien été éteint")
         list_neighbors = self.captor.environment.get_neighboors(case)
         for heat_case in list_neighbors:
             bool = False
-            heat_neighbors = self.captor.environment.get_neighbors(heat_case)
+            heat_neighbors = self.captor.environment.get_neighboors(heat_case)
             for heat_neighbor in heat_neighbors:
                 if heat_neighbor.fire:
                     bool = True
@@ -38,22 +40,26 @@ class Agent:
 
     # Evaluation Function : It will enable to evaluate the cost of a case and
     # improve the decision of the System Expert algorithm
-    def Evaluation(self, case):
-        if case.heat:
-            case.note = 20
-            if case.dust:
-                case.note = 15
-        elif case.dust:
-            case.note = 20
-        elif case.Fire:
-            case.note = 10
-            if case.rubble:
-                case.note = 5
-        elif case.rubble:
-            case.note = 10
-        else:
-            case.note = 30
+    def Evaluation_single_case(self, probaCase):
+        note = 0
+        if probaCase.people>=0:
+            note += probaCase.people * 100
+        if probaCase.fire>=0:
+            note += probaCase.fire * 10
+        if probaCase.rubble>=0:
+            note += probaCase.rubble * -50
+        return note
+    
+    def Evaluation(self, probaCase):
+        note = 0
+        note += self.Evaluation_single_case(probaCase)
+        list_neighboors = self.captor.getUnsureNeighboors(probaCase)
+        for neighbor in list_neighboors:
+            note += self.Evaluation_single_case(neighbor)
+        return note
 
+    #Tant qu'il n'est pas coincé et qu'il n'a pas trouvé la personne il continu
+    # a parcourir la grille
     def On_Off(self):
         while (self.peopleFound is False) & (self.blockedAgent is False):
             self.SystemExpert()
@@ -65,6 +71,23 @@ class Agent:
             print("Le jeu s'arrete")
             return False
 
+    #il analyse -> il choisit sa case ->il se déplace(eteindre le feu si il arrive dessus & mettre a jour le booléan si il est coincé)
     def SystemExpert(self):
-        print("J'avance d'une case vers la plus adéquate")
-        self.peopleFound = True
+        self.captor.ChainageAvant()
+        neightboorsList = self.captor.getNeighboorslist()
+        if self.previousCase in neightboorsList:
+            neightboorsList.remove(self.previousCase)
+        BestNote = self.Evaluation(self.captor.probaGrid[neightboorsList[0].x_position][neightboorsList[0].y_position])
+        BestCase = neightboorsList[0]
+        for c in neightboorsList[1:]:
+            note = self.Evaluation(self.captor.probaGrid[c.x_position][c.y_position])
+            if BestNote < note:
+                BestNote = note
+                BestCase = c
+        if (BestCase.fire is True):
+            self.extinguishFire(BestCase)
+        self.UpdateAgentPosition(BestCase.x_position, BestCase.y_position)
+        if (BestCase.people is True):
+            self.peopleFound = True
+        if (BestCase.rubble is True):
+            self.blockedAgent = True
