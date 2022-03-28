@@ -113,8 +113,8 @@ class CLI_Environment:
 
     # Scream Setter
     def SetScream(self, case):
-        for c in self.get_neighboors(self.grid[case.y_position][case.y_position]):
-            self.grid[c.x_position][c.y_position].scream = True
+        for c in self.get_neighboors(case):
+            c.scream = True
 
     #people Setter
     def Setpeople(self):

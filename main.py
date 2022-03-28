@@ -1,5 +1,6 @@
 from Environment.env import *
 from Agent.agent import *
+from Agent.captor import *
 
 if __name__ == '__main__':
     ######### Gloable variable ##########
@@ -16,9 +17,23 @@ if __name__ == '__main__':
     env.DisplayGrid()
 
     # creation of the agent
-    agent = Agent(X_pos_init_agent, Y_pos_init_agent, env, proba_fire, proba_rubble)
-    agent.updateProbaCase(env.grid[0][0])
-    bool = agent.On_Off()
+    captor = Captor(proba_fire, proba_rubble, env)
+
+    # creation of the agent
+    agent = Agent(X_pos_init_agent, Y_pos_init_agent, captor)
+    captor.ChainageAvant()
+    captor.DisplayProbaGrid()
+    
+    agent.UpdateAgentPosition(0,1)
+    agent.DisplayAgent()
+    captor.ChainageAvant()
+    captor.DisplayProbaGrid()
+        
+    agent.UpdateAgentPosition(1,1)
+    agent.DisplayAgent()
+    captor.ChainageAvant()
+    captor.DisplayProbaGrid()
+    # bool = agent.On_Off()
 
     #bool = True
     #while bool is True:
