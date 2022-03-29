@@ -1,4 +1,3 @@
-from asyncio.windows_events import NULL
 from dataclasses import dataclass
 from Environment.env import Case
 
@@ -22,7 +21,7 @@ class Captor:
         self.proba_fire = proba_fire
         self.proba_rubble = proba_rubble
         self.environment = environment
-        self.agent = NULL
+        self.agent = None
         self.probaGrid = [[ProbaCase(k, i) for i in range(environment.gridSize)] for k in range(environment.gridSize)]
         self.attributesProbaCase = [a for a in dir(self.probaGrid[0][0]) if not a.__contains__('_') and not callable(getattr(self.probaGrid[0][0], a))]
 
