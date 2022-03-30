@@ -58,7 +58,6 @@ class Captor:
         # update the rest of the grid with unsure values from values with knowing level 1
         for probaCase in toAnalyse:
             listUnsureNeighboors = self.getUnsureNeighboors(probaCase)
-            n = listUnsureNeighboors
             if probaCase.heat == 3:
                 for neighboor in listUnsureNeighboors:
                     if neighboor.fire <= 0:
