@@ -46,14 +46,8 @@ class Captor:
         # update the proba grid after moving with sure values
         L = self.getNeighboorslist()
         L.append(self.environment.grid[self.agent.x_position][self.agent.y_position])
-        for case in L:
-            x = case.x_position
-            y = case.y_position
-            probaCase = self.probaGrid[x][y]
-            if probaCase.known == 0:
-                self.updateProbaCase(case)
-                toAnalyse.append(probaCase)
-                
+        toAnalyse.append(self.visualizing(L))
+        
         # update the rest of the grid with unsure values from values with knowing level 1
         for probaCase in toAnalyse:
             listUnsureNeighboors = self.getUnsureNeighboors(probaCase)
@@ -97,3 +91,14 @@ class Captor:
             if probaCase.known == 0:
                 L.append(probaCase)
         return L
+    
+    def visualizing(self, L):
+        list = []
+        for case in L:
+            x = case.x_position
+            y = case.y_position
+            probaCase = self.probaGrid[x][y]
+            if probaCase.known == 0:
+                self.updateProbaCase(case)
+                list.append(probaCase)
+        return list
