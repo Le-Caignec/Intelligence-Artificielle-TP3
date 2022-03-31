@@ -14,8 +14,8 @@ if __name__ == '__main__':
 
     #creation of the l'environment
     env = CLI_Environment(SizeDepart)
-    #env.GenerateNewGrid(proba_fire, proba_rubble)
-    env.GenerateFixGrid()
+    env.GenerateNewGrid(proba_fire, proba_rubble)
+    # env.GenerateFixGrid()
     env.DisplayGrid()
 
     # creation of the agent
@@ -23,22 +23,22 @@ if __name__ == '__main__':
 
     # creation of the agent
     agent = Agent(X_pos_init_agent, Y_pos_init_agent, captor)
-    bool = agent.On_Off()
+    # bool = agent.On_Off()
 
-    # bool = True
-    # i=0
-    # while (bool is True) & (i<5):
-    #     sleep(2)
-    #     i+=1
-    #     # creation of the l'environment
-    #     SizeDepart += 1
-    #     env = CLI_Environment(SizeDepart)
-    #     env.GenerateNewGrid(proba_fire, proba_rubble)
-    #     env.DisplayGrid()
+    bool = True
+    i=0
+    while (bool is True) & (i<5):
+        sleep(2)
+        i+=1
+        # creation of the l'environment
+        SizeDepart += 1
+        env = CLI_Environment(SizeDepart)
+        env.GenerateNewGrid(proba_fire, proba_rubble)
+        env.DisplayGrid()
 
-    #     # creation of the agent
-    #     captor = Captor(proba_fire, proba_rubble, env)
+        # creation of the agent
+        captor = Captor(proba_fire, proba_rubble, env)
 
-    #     # creation of the agent
-    #     agent = Agent(X_pos_init_agent, Y_pos_init_agent, captor)
-    #     bool = agent.On_Off()
+        # creation of the agent
+        agent = Agent(X_pos_init_agent, Y_pos_init_agent, captor)
+        bool = agent.On_Off()

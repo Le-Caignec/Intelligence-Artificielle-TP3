@@ -42,12 +42,20 @@ class Agent:
     # improve the decision of the System Expert algorithm
     def Evaluation_single_case(self, probaCase):
         note = 0
-        if probaCase.people>=0:
+        if probaCase.people>0:
             note += probaCase.people * 200
-        if probaCase.fire>=0:
+        elif probaCase.people == 0:
+            note += -10
+        if probaCase.fire>0:
             note += probaCase.fire * -10
-        if probaCase.rubble>=0:
-            note += probaCase.rubble * -100
+        elif probaCase.fire == 0:
+            note += 10
+        if probaCase.rubble>0:
+            if probaCase.rubble == 3:
+                note=-1000
+            else: note = probaCase.rubble * -100
+        elif probaCase.rubble == 0:
+            note += 100
         return note
     
     def Evaluation(self, probaCase):
@@ -86,7 +94,7 @@ class Agent:
             for c in neightboorsList[1:]:
                 note = self.Evaluation(self.captor.probaGrid[c.x_position][c.y_position])
                 if c == self.previousCase:
-                    note = note-100
+                    note = note-400
                 if BestNote < note:
                     BestNote = note
                     BestCase = c

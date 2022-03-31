@@ -46,29 +46,39 @@ class Captor:
         # update the proba grid after moving with sure values
         L = self.getNeighboorslist()
         L.append(self.environment.grid[self.agent.x_position][self.agent.y_position])
-        toAnalyse.append(self.visualizing(L))
-        
+        for el in self.visualizing(L):
+            toAnalyse.append(el)
+
         # update the rest of the grid with unsure values from values with knowing level 1
         for probaCase in toAnalyse:
             listUnsureNeighboors = self.getUnsureNeighboors(probaCase)
             if probaCase.heat == 3:
                 for neighboor in listUnsureNeighboors:
-                    if neighboor.fire <= 0:
+                    if neighboor.fire == -1:
                         neighboor.fire = 1
                     elif neighboor.fire >=1:
-                        neighboor.fire = 2                    
+                        neighboor.fire = 2
+            else:
+                for neighboor in listUnsureNeighboors:
+                    neighboor.fire = 0
             if probaCase.dust == 3:
                 for neighboor in listUnsureNeighboors:
-                    if neighboor.rubble <= 0:
+                    if neighboor.rubble == -1:
                         neighboor.rubble = 1
                     elif neighboor.rubble >=1:
-                        neighboor.rubble = 2     
+                        neighboor.rubble = 2
+            else:
+                for neighboor in listUnsureNeighboors:
+                    neighboor.rubble = 0 
             if probaCase.scream == 3:
                 for neighboor in listUnsureNeighboors:
-                    if neighboor.people <= 0:
+                    if neighboor.people == -1:
                         neighboor.people = 1
                     elif neighboor.people >=1:
-                        neighboor.people = 2     
+                        neighboor.people = 2
+            else:
+                for neighboor in listUnsureNeighboors:
+                    neighboor.people = 0 
         
     # on update une case voisine qu'on a pu observer (une case voisine de la case ou 
     # ce trouve l'agent ou encore la case elle meme ou se trouve l'agent)
