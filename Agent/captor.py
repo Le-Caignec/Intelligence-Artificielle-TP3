@@ -86,6 +86,8 @@ class Captor:
         x = case.x_position
         y = case.y_position
         probaCase = self.probaGrid[x][y]
+        if case.rubble:
+            self.agent.listForbidCases.append(case)
         for attr in self.attributesProbaCase:
             if attr ==  "known":
                 probaCase.known = 1

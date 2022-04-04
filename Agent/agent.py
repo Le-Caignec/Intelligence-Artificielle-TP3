@@ -1,5 +1,8 @@
 
 
+from operator import ne
+
+
 class Agent:
 
     def __init__(self, x_position, y_position, captor):
@@ -9,8 +12,9 @@ class Agent:
         self.captor.setAgent(self)
         self.peopleFound = False
         self.blockedAgent = False
-        self.previousCase = self.captor.environment.grid[x_position][y_position]
+        self.visitedCases = [self.captor.environment.grid[x_position][y_position]]
         self.listForbidCases = []
+        self.nonVisitedCases = []
         
     #function that enable to display in the console
     #the agent's position
@@ -21,7 +25,12 @@ class Agent:
 
     #function that enable to update the agent's position
     def UpdateAgentPosition(self, x_position, y_position):
-        self.previousCase = self.captor.environment.grid[self.x_position][self.y_position]
+        previousCase = self.captor.environment.grid[self.x_position][self.y_position]
+        if previousCase not in self.visitedCases:
+            if previousCase in self.nonVisitedCases:
+                self.nonVisitedCases.remove(previousCase)
+            if previousCase not in self.visitedCases:
+                self.visitedCases.append(previousCase)
         self.x_position = x_position
         self.y_position = y_position
 
@@ -52,19 +61,25 @@ class Agent:
             note += 10
         if probaCase.rubble > 0:
             if probaCase.rubble == 3:
-                note = -1000
+                return -1
             else:
                 note = probaCase.rubble * -100
         elif probaCase.rubble == 0:
             note += 100
         return note
     
-    def Evaluation(self, probaCase):
-        note = 0
-        note += self.Evaluation_single_case(probaCase)
-        list_neighboors = self.captor.getUnsureNeighboors(probaCase)
+    def Evaluation(self, c):
+        note = self.Evaluation_single_case(self.captor.probaGrid[c.x_position][c.y_position])
+        if note == -1:
+            return -5000
+        list_neighboors = self.captor.environment.get_neighboors(c)
         for neighbor in list_neighboors:
-            note += self.Evaluation_single_case(neighbor)
+            if neighbor.x_position != self.x_position and neighbor.y_position != self.y_position:
+                note_neighbor = self.Evaluation_single_case(neighbor)
+                if note_neighbor == -1:
+                    note+= -300
+                else:
+                    note+=note_neighbor
         return note
 
     #Tant qu'il n'est pas coincé et qu'il n'a pas trouvé la personne il continu
@@ -87,20 +102,41 @@ class Agent:
         for case in self.listForbidCases:
             if case in neightboorsList:
                 neightboorsList.remove(case)
-        if neightboorsList == []:
+        for case in self.visitedCases:
+            if case in neightboorsList:
+                neightboorsList.remove(case)
+        if neightboorsList == [] and self.nonVisitedCases == []:
             self.blockedAgent = True
+        elif neightboorsList == [] and self.nonVisitedCases != []:
+            BestNote = self.Evaluation(self.captor.probaGrid[self.nonVisitedCases[0].x_position][self.nonVisitedCases[0].y_position])
+            BestCase = self.nonVisitedCases[0]
+            for c in self.nonVisitedCases[1:]:
+                if c not in self.nonVisitedCases:
+                    self.nonVisitedCases.append(c)
+                note = self.Evaluation(c)
+                if BestNote < note:
+                    BestNote = note
+                    BestCase = c
+            print("je reviens sur mes pas")
+            if (BestCase.fire is True):
+                self.extinguishFire(BestCase)
+            self.UpdateAgentPosition(BestCase.x_position, BestCase.y_position)
+            if (BestCase.people is True):
+                self.peopleFound = True
+            if (BestCase.rubble is True):
+                self.blockedAgent = True
         else:
             BestNote = self.Evaluation(self.captor.probaGrid[neightboorsList[0].x_position][neightboorsList[0].y_position])
             BestCase = neightboorsList[0]
             for c in neightboorsList[1:]:
-                note = self.Evaluation(self.captor.probaGrid[c.x_position][c.y_position])
-                if c == self.previousCase:
-                    note = note-400
-                if BestNote < note:
+                if c not in self.nonVisitedCases:
+                    self.nonVisitedCases.append(c)
+                note = self.Evaluation(c)
+                if note == -5000:
+                    pass
+                elif BestNote < note:
                     BestNote = note
                     BestCase = c
-            if BestCase == self.previousCase:
-                self.listForbidCases.append(self.captor.environment.grid[self.x_position][self.y_position])
             if (BestCase.fire is True):
                 self.extinguishFire(BestCase)
             self.UpdateAgentPosition(BestCase.x_position, BestCase.y_position)
