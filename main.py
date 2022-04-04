@@ -6,6 +6,7 @@ from time import sleep
 if __name__ == '__main__':
     print('Enter la taille maximale que la grille pourra atteindre (rentrez un entier):')
     max_size = int(input())
+
     ######### Gloable variable ##########
     SizeDepart = 4
     proba_fire = 1/5
@@ -17,7 +18,6 @@ if __name__ == '__main__':
     #creation of the l'environment
     env = CLI_Environment(SizeDepart)
     env.GenerateNewGrid(proba_fire, proba_rubble)
-    # env.GenerateFixGrid()
     env.DisplayGrid()
 
     # creation of the agent
