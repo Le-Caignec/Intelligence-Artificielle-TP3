@@ -42,18 +42,19 @@ class Agent:
     # improve the decision of the System Expert algorithm
     def Evaluation_single_case(self, probaCase):
         note = 0
-        if probaCase.people>0:
+        if probaCase.people > 0:
             note += probaCase.people * 200
         elif probaCase.people == 0:
             note += -10
-        if probaCase.fire>0:
+        if probaCase.fire > 0:
             note += probaCase.fire * -10
         elif probaCase.fire == 0:
             note += 10
-        if probaCase.rubble>0:
+        if probaCase.rubble > 0:
             if probaCase.rubble == 3:
-                note=-1000
-            else: note = probaCase.rubble * -100
+                note = -1000
+            else :
+                note = probaCase.rubble * -100
         elif probaCase.rubble == 0:
             note += 100
         return note

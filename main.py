@@ -4,6 +4,8 @@ from Agent.captor import *
 from time import sleep
 
 if __name__ == '__main__':
+    print('Enter la taille maximale que la grille pourra atteindre (rentrez un entier):')
+    max_size = int(input())
     ######### Gloable variable ##########
     SizeDepart = 4
     proba_fire = 1/5
@@ -23,13 +25,12 @@ if __name__ == '__main__':
 
     # creation of the agent
     agent = Agent(X_pos_init_agent, Y_pos_init_agent, captor)
-    # bool = agent.On_Off()
+    bool = agent.On_Off()
 
-    bool = True
-    i=0
-    while (bool is True) & (i<5):
+    i = 0
+    while (bool is True) & (i < max_size):
         sleep(2)
-        i+=1
+        i += 1
         # creation of the l'environment
         SizeDepart += 1
         env = CLI_Environment(SizeDepart)
