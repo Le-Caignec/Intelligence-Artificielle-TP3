@@ -53,7 +53,7 @@ class Agent:
         if probaCase.rubble > 0:
             if probaCase.rubble == 3:
                 note = -1000
-            else :
+            else:
                 note = probaCase.rubble * -100
         elif probaCase.rubble == 0:
             note += 100
